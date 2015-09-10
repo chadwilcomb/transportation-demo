@@ -1,0 +1,162 @@
+@import 'yeticss'
+@import './leaflet.styl'
+
+piq-purple = #6656a4
+piq-purple-dark = darken(piq-purple, 15)
+piq-purple-light = lighten(piq-purple, 45)
+body-black = #4d5659
+
+
+
+body
+    padding: 0
+    margin: 0
+a
+    color: piq-purple
+a:hover
+    color: piq-purple-dark
+
+.button
+    background-color: piq-purple
+.button:hover
+    background-color: piq-purple-dark
+
+html, body, .nav-helper, .body, .demo-container, .map
+    height: 100%
+
+.body
+    height: calc(100% - 62px)
+h1, h2, h3, h4, h5, h6, strong
+    color: body-black
+
+.top-nav
+    margin-bottom: 0
+    border: none
+
+.top-nav, .top-nav *, .top-nav-light, .top-nav-light li
+    background-color: piq-purple
+
+.top-nav a
+    color: #E5E5E5
+
+.top-nav a:hover, .top-nav a.current-item
+    color: #FFF
+
+.top-nav ul
+    width: 100%
+    border: none
+    padding-top: 15px
+.top-nav ul li
+    padding: 0
+.top-nav ul a
+    font-size: 16px
+.top-nav ul a.piq-link
+    color: #969696
+
+.piq-link
+    background-image: url(../images/piq-logo-inv.png)
+    background-size: 79px 25px
+    height: 25px
+    width: 79px
+    margin-left: 10px
+    margin-right: 10px
+.piq-link-lg
+    background-image: url(../images/piq-logo.png)
+    background-size: 146px 46px
+    height: 46px
+    width: 146px
+    display: block
+
+
+.map
+    float: left
+    position: relative
+    width: 70%
+    height: 100%
+    overflow: hidden
+.sidebar
+    float: left
+    padding: 0 8px 8px 8px
+    width: 30%
+    height: 100%
+    overflow-x:hidden
+    overflow-y: auto
+    strong
+        font-weight: 700
+        color: piq-purple
+    .tabs
+        margin-bottom: 5px
+
+    .airport-switch
+        width: 100%
+        margin-top: 5px
+    .airport-name
+        width: 100%
+        font-weight: bold
+        font-size: 1.1em
+        margin-top: 10px
+        margin-bottom: 10px
+    .airport-info
+        width: 100%
+    .airport-info p
+        margin-bottom: 2px
+
+    li.airport-tab
+        width: 33%
+        text-align: center
+    li.airport-tab a
+        font-size: 1.5em
+        padding: 10px 10px
+        color: body-black
+    li.airport-tab a.current-item, li.airport-tab a:hover
+        color: piq-purple
+    .audience-profile-container
+        overflow-y: auto
+    .audience-profile-heading
+        font-weight: bold
+        margin-bottom: 0
+    .audience-profile-table
+        font-size: 0.85em
+    .clickable
+        cursor: pointer
+    .audience-profile-table td
+        padding: 3px
+    .audience-profile-table td:first-child
+        width: 80%
+    .sel-cat, .sel-cat-name *, .clickable:hover
+        color: piq-purple
+        background-color: piq-purple-light
+    .sel-cat:hover, .sel-cat-name:hover
+        color: piq-purple-dark
+
+header
+  padding-top: 50px
+
+.label
+  height: 40px
+
+  .label-color
+    width: 24px
+    height: 24px
+    border: 1px solid grey
+    border-radius: 20px
+    display: inline-block
+
+  > span
+    margin-left: 10px
+    margin-right: 10px
+
+
+.modal
+    position: relative
+    border: 2px solid #565656
+    color: #565656
+    width: 25%
+    padding: 20px
+    p
+        margin-bottom: 0
+        font-size: 14px
+
+.hidden
+    display: none
+    visibility: hidden
