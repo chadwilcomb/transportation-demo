@@ -9,7 +9,7 @@ export default React.createClass({
     displayName: 'Layout',
 
     render () {
-        
+
         const {navs} = this.props;
 
         return (
@@ -18,7 +18,7 @@ export default React.createClass({
                     <input id='menu-toggle' className='menu-toggle' type='checkbox'/>
                     <label htmlFor='menu-toggle'>Menu</label>
                     <ul className='list-unstyled list-inline breadcrumbs'>
-                        <li><a className='piq-link' href='http://www.placeiq.com/' target='_blank'></a></li>
+                        <li><a className='piq-link' href='/'></a></li>
                         {navs.map((nav) => {
                             return <Nav key={nav.title} nav={nav}/>
                         })}

@@ -14,8 +14,8 @@ export default React.createClass({
         const {navs} = this.props;
         return (
             <div className='demo-container'>
-                <Map mapState={app.mapState} />
-                <Sidebar />
+                <Map mapHelper={app.mapHelper} />
+                <Sidebar mapState={app.mapState} zones={app.zones} counts={app.counts} />
             </div>
         );
     }

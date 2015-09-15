@@ -1,7 +1,8 @@
 import State from 'ampersand-state';
 import app from 'ampersand-app';
 import extend from 'extend-object';
-import L from 'leaflet';
+// import L from 'leaflet';
+import L from 'mapbox.js'
 import bind from 'lodash.bind';
 
 export default State.extend({
@@ -64,38 +65,75 @@ export default State.extend({
             _this.addCollectionLayer(collection);
           }
         })
-        // app.airportCollection.fetch({
-        //     parse: true,
-        //     success (collection, response, options) {
-        //         _this.addCollectionLayer(collection);
-        //     }
-        // });
 
-
-        // this.listenTo(app.airport, 'change:airport_id', this.onAirportChanged);
-        // this.listenTo(app.personType, 'change:person_type_id', this.onPersonTypeChanged);
-        // this.listenTo(app.category, 'change', this.onCategoryChanged);
+        this.listenTo(app, 'update-map', this.updateStyle)
 
         return app.map;
     },
 
+
     addCollectionLayer (collection) {
-        const _this = this;
-        const layerId = collection.layerId();
-        app.geoJsonLayers[layerId] = L.geoJson([], collection.leafletOptions()).addTo(app.map);
-        app.geoJsonLayers[layerId].on('layeradd', function () { _this.hideLoading(); });
-        app.geoJsonLayers[layerId].addData(collection.toGeoJSON());
-        switch (layerId) {
-            case 'zones':
-                // this.zoomToLayer('zones');
-                break;
-            // case 'requests':
-            //     this.zoomToSelectedAirport(app.airport.airport_id);
-            //     break;
-            default:
-                break;
+        const _this = this
+        const layerId = collection.layerId()
+        this.showLoading()
+        // app.geoJsonLayers[layerId] = L.geoJson([], collection.leafletOptions()).addTo(app.map);
+        app.geoJsonLayers[layerId] = L.mapbox.featureLayer([], collection.leafletOptions()).addTo(app.map)
+        app.geoJsonLayers[layerId].on('layeradd', function () { _this.hideLoading() })
+        app.geoJsonLayers[layerId].setGeoJSON(collection.toGeoJSON())
+        // app.geoJsonLayers[layerId].on('click', collection.onClickLayer)
+
+        app.geoJsonLayers[layerId].eachLayer(function (layer) {
+          // layer.setStyle(collection.countStyle)
+          layer.bindPopup(collection.getPopupContent(layer.feature), { closeButton: false, autoPan: false })
+          layer.on('click', collection.onClickLayer)
+          // layer.on('mouseover', function(e) {
+          //     e.layer.openPopup();
+          // })
+        })
+
+        // this.listenTo(app.mapState, 'change:zone_id', function () {
+        //   app.geoJsonLayers[layerId].setGeoJSON(collection.toGeoJSON())
+        // })
+
+        // app.geoJsonLayers[layerId].addData(collection.toGeoJSON());
+        // switch (layerId) {
+        //     case 'zones':
+        //         // this.zoomToLayer('zones');
+        //         app.geoJsonLayers[layerId].on({
+        //             click: function (e) {
+        //               app.geoJsonLayers[layerId].setStyle(collection.baseStyle())
+        //               e.layer.setStyle(collection.highlightStyle()).bringToFront()
+        //               // app.selectedZone.set(e.layer.feature.properties)
+        //             }
+        //         });
+        //         break;
+        //     default:
+        //         break;
+        // }
+    },
+
+    updateStyle (collection) {
+      console.log('update style')
+        const newStyle = collection.countStyle
+        const layerId = collection.layerId()
+        if (app.geoJsonLayers[layerId]) {
+            app.geoJsonLayers[layerId].eachLayer(function (layer) {
+                layer.setStyle(newStyle(layer.feature));
+            });
         }
     },
+
+    // resetCollectionLayer (collection) {
+    //   const _this = this
+    //   const layerId = collection.layerId()
+    //   app.geoJsonLayers[layerId].setGeoJSON(collection.toGeoJSON())
+    // //   this.removeLayer(collection)
+    // //   // this.addCollectionLayer(collection)
+    // //   app.geoJsonLayers[layerId] = L.geoJson([], collection.leafletOptions()).addTo(app.map);
+    // //   app.geoJsonLayers[layerId].addData(collection.toGeoJSON());
+    // //   // app.geoJsonLayers[layerId].setStyle(collection.countStyle);
+    // //   // app.geoJsonLayers[layerId].onEachFeature(collection.leafletOptions().onEachFeature);
+    // },
 
     showLoading () {
         !app.isLoading && app.showLoading();
@@ -113,23 +151,6 @@ export default State.extend({
     zoomToLayer (layerName) {
         app.map.fitBounds(app.geoJsonLayers[layerName].getBounds());
         app.map.invalidateSize();
-    },
-
-    zoomToSelectedAirport (airportId) {
-        const {geometry} = app.airport;
-        if (geometry) {
-            app.map.fitBounds(L.geoJson(geometry).getBounds(), { padding: [100,100] });
-        }
-    },
-
-    centerOnSelectedAirport () {
-        const {geometry} = app.airport;
-        if (geometry) {
-            app.map.panTo(L.geoJson(geometry).getBounds().getCenter());
-            if (app.map.getZoom() > 10) {
-                app.map.setZoom(10);
-            }
-        }
     },
 
     addLayer(collection) {
@@ -158,69 +179,5 @@ export default State.extend({
             app.map.removeLayer(app.geoJsonLayers[layerId]);
         }
     },
-
-    updateStyle (collection) {
-        const newStyle = bind(collection.setStyle, collection),
-            layerId = collection.layerId();
-        if (app.geoJsonLayers[layerId]) {
-            app.geoJsonLayers[layerId].eachLayer(function (layer) {
-                layer.setStyle(newStyle(layer.feature));
-            });
-        }
-    },
-    resetData (collection) {
-        const layerId = collection.layerId()
-        let geoJson;
-        if (app.geoJsonLayers[layerId]) {
-            app.geoJsonLayers[layerId].clearLayers();
-            geoJson = collection.toGeoJSON();
-            app.geoJsonLayers[layerId].addData(geoJson);
-            if (geoJson.features.length === 0) {
-                console.log('length === 0');
-                this.hideLoading();
-            }
-        }
-    },
-
-    onAirportChanged (airport) {
-        const navId = app.navs.findWhere({active: true }).id;
-        console.log('airport changed, selected Nav = ' + navId + ', airport_id=' + airport.airport_id + ', person_type_id=' + app.personType.person_type_id);
-        this.updateStyle(app.airportCollection);
-        switch (navId) {
-            case 'requests':
-                this.zoomToSelectedAirport();
-                break;
-            case 'locals':
-            case 'workers':
-                this.resetData(app.homedwellCollection);
-                this.resetData(app.destinationCollection);
-                this.centerOnSelectedAirport();
-                break;
-            case 'visitors':
-                this.resetData(app.visitorCollection);
-                this.resetData(app.destinationCollection);
-                this.centerOnSelectedAirport();
-                break;
-        }
-
-        //highlight selected airport
-        this.updateStyle(app.airportCollection);
-
-    },
-
-    onPersonTypeChanged (model) {
-
-        this.resetData(app.homedwellCollection);
-        this.resetData(app.visitorCollection);
-        this.resetData(app.destinationCollection);
-
-        this.centerOnSelectedAirport();
-    },
-
-    onCategoryChanged (categoryId) {
-
-        this.resetData(app.destinationCollection);
-    }
-
 
 });

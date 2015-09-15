@@ -18,38 +18,8 @@ export default React.createClass({
 
     componentDidMount () {
 
-        const {mapState} = this.props;
-        mapState.initMap(map);
+        const {mapHelper} = this.props;
+        mapHelper.initMap(map);
 
-        this.listenTo(app, 'page', function (page) {
-            switch (page) {
-                // case 'demo':
-                // case 'airports':
-                //     mapState.removeLayer(app.requestCollection);
-                //     mapState.removeLayer(app.destinationCollection);
-                //     mapState.removeLayer(app.homedwellCollection);
-                //     break;
-                // case 'requests':
-                //     app.showLoading();
-                //     mapState.addLayer(app.requestCollection);
-                //     mapState.removeLayer(app.destinationCollection);
-                //     mapState.removeLayer(app.homedwellCollection);
-                //     break;
-                // case 'locals':
-                // case 'workers':
-                //     app.showLoading();
-                //     mapState.removeLayer(app.requestCollection);
-                //     mapState.addLayer(app.destinationCollection);
-                //     mapState.addLayer(app.homedwellCollection);
-                //     break;
-                // case 'visitors':
-                //     app.showLoading();
-                //     mapState.removeLayer(app.requestCollection);
-                //     mapState.removeLayer(app.homedwellCollection);
-                //     mapState.addLayer(app.destinationCollection);
-                //     mapState.addLayer(app.visitorCollection);
-                //     break;
-            }
-        });
     },
 })

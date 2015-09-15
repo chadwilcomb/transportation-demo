@@ -1,4 +1,6 @@
 @import 'yeticss'
+@import './_colors.styl'
+@import './sidebar.styl'
 @import './leaflet.styl'
 
 piq-purple = #6656a4
@@ -13,6 +15,7 @@ body
     margin: 0
 a
     color: piq-purple
+
 a:hover
     color: piq-purple-dark
 
@@ -160,3 +163,6 @@ header
 .hidden
     display: none
     visibility: hidden
+
+.noselect
+    user-select: none
