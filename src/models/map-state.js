@@ -9,7 +9,7 @@ export default State.extend({
 
       hour: {
         type: 'number',
-        default: 1
+        default: 9
       },
 
       zone_id: {
@@ -18,6 +18,22 @@ export default State.extend({
       },
       // zone_id: 'number',
       zone_area: 'number',
+      zone_count: {
+        type: 'number',
+        default: 0
+      },
+      zone_pct: {
+        type: 'string',
+        default: '0%'
+      },
+      zone_count_out: {
+        type: 'number',
+        default: 0
+      },
+      zone_pct_out: {
+        type: 'string',
+        default: '0%'
+      },
       zone_name: {
         type: 'string',
         default: ''
@@ -26,8 +42,10 @@ export default State.extend({
         type: 'string',
         default: ''
       },
-      zone_geometry: 'object'
-
+      showCounts: {
+        type: 'boolean',
+        default: false
+      }
     },
 
     derived: {
@@ -39,20 +57,31 @@ export default State.extend({
       },
     },
 
-    initialize () {
-      this.listenTo(app.navs, 'change:active', function (nav) {
-        if (nav.active) {
-          this.page = nav.getId()
-        }
-      })
+    startListening () {
+      this.listenToOnce(app.zones, 'sync', this.updateMe)
+      // this.listenTo(app.navs, 'change:active', function (nav) {
+      //   if (nav.active) {
+      //     this.page = nav.getId()
+      //   }
+      // })
 
       // this.listenTo(app.counts, 'sync', this.updateZoneInfo)
     },
-
-    updateZoneInfo () {
-      const topCounts = app.counts.getTopCounts()
-      const selectedZoneCount = app.counts.getInternalOrigins(this.zone_id)
-      const outsideCount = app.counts.getExternalOrigins(this.zone_id)
+    updateMe () {
+      var selectedZone = app.zones.getZone(this.zone_id)
+      this.updateZoneInfo(selectedZone);
+    },
+    updateZoneInfo (zone) {
+      this.zone_id = zone.properties.zone_id
+      this.zone_name = zone.properties.name
+      this.zone_state = zone.properties.state_name
+      this.zone_area = zone.properties.shape_area
     }
+
+    // updateZoneInfo () {
+    //   const topCounts = app.counts.getTopCounts()
+    //   const selectedZoneCount = app.counts.getInternalOrigins(this.zone_id)
+    //   const outsideCount = app.counts.getExternalOrigins(this.zone_id)
+    // }
 
 });

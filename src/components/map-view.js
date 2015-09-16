@@ -9,7 +9,7 @@ export default React.createClass({
     render () {
         return (
             <div id='map' className='map'>
-                <div id='loading' className='modal modal-no-sections hidden'>
+                <div id='loading' className='modal modal-no-sections'>
                     <p>Loading data...</p>
                 </div>
             </div>

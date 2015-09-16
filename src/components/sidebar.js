@@ -21,7 +21,7 @@ export default React.createClass({
         <div id='sidebar' className='sidebar'>
           <SelectedZoneSummary mapState={mapState} />
           <SelectedHourSummary mapState={mapState} />
-          <CountsSummary zones={zones} counts={counts} selectedZoneId={mapState.zone_id} />
+          <CountsSummary zones={zones} counts={counts} mapState={mapState} />
         </div>
       )
     },

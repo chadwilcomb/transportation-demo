@@ -5,6 +5,8 @@ import extend from 'extend-object';
 import L from 'mapbox.js'
 import bind from 'lodash.bind';
 
+
+
 export default State.extend({
 
     getMapDefaults() {
@@ -26,17 +28,24 @@ export default State.extend({
         }
     },
 
-    getSatelliteMapDefaults() {
-        return {
-            basemapUrl: 'https://{s}.tiles.mapbox.com/v3/placeiq.map-trgmcjhu/{z}/{x}/{y}.png',
-            options: {
-                detectRetina: true
-            }
-        }
-    },
+    // getSatelliteMapDefaults() {
+    //     return {
+    //         basemapUrl: 'https://{s}.tiles.mapbox.com/v3/placeiq.map-trgmcjhu/{z}/{x}/{y}.png',
+    //         options: {
+    //             detectRetina: true
+    //         }
+    //     }
+    // },
 
     initMap (element) {
         const _this = this;
+
+        L.Polygon.prototype.isEmpty = function () {
+          return !this._latlngs.length || !this._latlngs[0].length;
+        }
+
+        L.mapbox.accessToken = 'pk.eyJ1IjoibmV3ZmllbGRzIiwiYSI6Ikk3TmFfYWMifQ.yxfeME9vJaT2GyCbnzsBzw';
+
         app.map = L.map(element, this.getMapDefaults());
 
         /* MapBox Grey Muted Palette Map */
@@ -45,28 +54,33 @@ export default State.extend({
                 this.getBasemapDefaults().options);
 
                 /* MapBox Satellite Map */
-        var basemapSatellite = L.tileLayer(
-                this.getSatelliteMapDefaults().basemapUrl,
-                this.getSatelliteMapDefaults().options);
+        // var basemapSatellite = L.tileLayer(
+        //         this.getSatelliteMapDefaults().basemapUrl,
+        //         this.getSatelliteMapDefaults().options);
+        //
 
-
-        var baseMaps = {
-            'Gray Basemap': basemapGray,
-            'Satellite Imagery': basemapSatellite
-        };
+        // var baseMaps = {
+        //     'Gray Basemap': basemapGray,
+        //     'Satellite Imagery': basemapSatellite
+        // };
 
         basemapGray.addTo(app.map);
 
-        L.control.layers(baseMaps).addTo(app.map);
+        this.closeTooltip = null
+        this.popup = new L.popup({ closeButton: false, autoPan: false, offset: [0,-5] })
+        this.popupOn = false
 
-        app.zones.fetch({
-          parse: true,
-          success (collection, response, options) {
-            _this.addCollectionLayer(collection);
-          }
-        })
+        // L.control.layers(baseMaps).addTo(app.map);
+
+        // app.zones.fetch({
+        //   parse: true,
+        //   success (collection, response, options) {
+        //     _this.addCollectionLayer(collection);
+        //   }
+        // })
 
         this.listenTo(app, 'update-map', this.updateStyle)
+        if (app.zones.length) this.updateStyle(app.zones)
 
         return app.map;
     },
@@ -84,11 +98,30 @@ export default State.extend({
 
         app.geoJsonLayers[layerId].eachLayer(function (layer) {
           // layer.setStyle(collection.countStyle)
-          layer.bindPopup(collection.getPopupContent(layer.feature), { closeButton: false, autoPan: false })
+          // layer.bindPopup(collection.getPopupContent(layer.feature), { closeButton: false, autoPan: false })
           layer.on('click', collection.onClickLayer)
-          // layer.on('mouseover', function(e) {
-          //     e.layer.openPopup();
-          // })
+          layer.on('mouseover', function(e) {
+            // e.layer.openPopup();
+            // console.log(e)
+            _this.popup.setLatLng(e.latlng)
+            _this.popup.setContent(collection.getPopupContent(e.target.feature))
+            if (!_this.popup._map) _this.popup.openOn(app.map);
+            window.clearTimeout(_this.closeTooltip);
+            // if (!app.popupOn) {
+            //   app.popup.openOn(app.map)
+            //   app.popupOn = true
+            // }
+          })
+          layer.on('mouseout', function(e) {
+              // e.layer.closePopup();
+              _this.closeTooltip = window.setTimeout(function() {
+                app.map.closePopup();
+              }, 100);
+              // if (app.popupOn) {
+              //   app.map.closePopup()
+              //   app.popupOn = false
+              // }
+          })
         })
 
         // this.listenTo(app.mapState, 'change:zone_id', function () {
@@ -113,14 +146,15 @@ export default State.extend({
     },
 
     updateStyle (collection) {
-      console.log('update style')
-        const newStyle = collection.countStyle
-        const layerId = collection.layerId()
-        if (app.geoJsonLayers[layerId]) {
-            app.geoJsonLayers[layerId].eachLayer(function (layer) {
-                layer.setStyle(newStyle(layer.feature));
-            });
-        }
+      const newStyle = collection.countStyle
+      const layerId = collection.layerId()
+      if (app.geoJsonLayers[layerId]) {
+          app.geoJsonLayers[layerId].eachLayer(function (layer) {
+              layer.setStyle(newStyle(layer.feature));
+          });
+      } else {
+        this.addCollectionLayer(collection)
+      }
     },
 
     // resetCollectionLayer (collection) {
@@ -148,36 +182,36 @@ export default State.extend({
         }, 300);
     },
 
-    zoomToLayer (layerName) {
-        app.map.fitBounds(app.geoJsonLayers[layerName].getBounds());
-        app.map.invalidateSize();
-    },
+    // zoomToLayer (layerName) {
+    //     app.map.fitBounds(app.geoJsonLayers[layerName].getBounds());
+    //     app.map.invalidateSize();
+    // },
 
-    addLayer(collection) {
-        const _this = this,
-            layerId = collection.layerId();
-        if (app.geoJsonLayers[layerId]) {
+    // addLayer(collection) {
+    //     const _this = this,
+    //         layerId = collection.layerId();
+    //     if (app.geoJsonLayers[layerId]) {
+    //
+    //         app.geoJsonLayers[layerId].addTo(app.map);
+    //         if (layerId === 'requests') {
+    //             this.hideLoading();
+    //         }
+    //     } else {
+    //
+    //         collection.fetch({
+    //             parse: true,
+    //             success (collection, response, options) {
+    //                 _this.addCollectionLayer(collection);
+    //             }
+    //         });
+    //     }
+    // },
 
-            app.geoJsonLayers[layerId].addTo(app.map);
-            if (layerId === 'requests') {
-                this.hideLoading();
-            }
-        } else {
-
-            collection.fetch({
-                parse: true,
-                success (collection, response, options) {
-                    _this.addCollectionLayer(collection);
-                }
-            });
-        }
-    },
-
-    removeLayer (collection) {
-        const layerId = collection.layerId();
-        if (app.geoJsonLayers[layerId]) {
-            app.map.removeLayer(app.geoJsonLayers[layerId]);
-        }
-    },
+    // removeLayer (collection) {
+    //     const layerId = collection.layerId();
+    //     if (app.geoJsonLayers[layerId]) {
+    //         app.map.removeLayer(app.geoJsonLayers[layerId]);
+    //     }
+    // },
 
 });

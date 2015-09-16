@@ -13,25 +13,40 @@ export default React.createClass({
     },
 
     render () {
-      const {zones, selectedZoneId} = this.props
+      const {zones, mapState} = this.props
       const top = zones.getTopCounts()
+      const showClass = 'pull-right counts-toggle'
+      const hideClass = 'pull-right counts-toggle hidden'
       let content = []
       let max
-      // console.log('counts-summary-render ' + new Date())
+      const pctClass = mapState.showCounts ? showClass : hideClass
+      const rawClass = !mapState.showCounts ? showClass : hideClass
 
-      if (selectedZoneId) {
-        top.forEach(function (count) {
-          if (!max && count.properties.zone_id !== selectedZoneId) {
-            max = count.properties.count
-          }
-          content.push(<CountRow key={count.properties.zone_id} count={count} max={max || count.properties.count} />)
-        })
-      }
+      top.forEach(function (count) {
+        if (!max && count.properties.zone_id !== mapState.zone_id) {
+          max = count.properties.count
+        }
+        content.push(<CountRow key={count.properties.zone_id} count={count} max={max || count.properties.count} mapState={mapState} />)
+      })
+
       return (
         <div id='counts-summary' className='counts-summary'>
-          <p>Top Origins:</p>
+          <div className='zone-header pull-left'>TOP ORIGINS</div>
+          <a className={pctClass} onClick={this.toggleCounts}>SHOW PCT%</a>
+          <a className={rawClass} onClick={this.toggleCounts}>SHOW RAW</a>
           {content}
         </div>
       )
+    },
+
+    showPct (e) {
+      const {mapState} = this.props
+
+    },
+
+    toggleCounts (e) {
+      e.preventDefault()
+      const {mapState} = this.props
+      mapState.showCounts = !mapState.showCounts
     }
 })

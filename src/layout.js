@@ -1,7 +1,6 @@
 import React from 'react';
 import ampersandMixin from 'ampersand-react-mixin';
 import NavHelper from './components/nav-helper';
-import Nav from './components/nav-switcher';
 
 export default React.createClass({
     mixins: [ampersandMixin],
@@ -10,8 +9,6 @@ export default React.createClass({
 
     render () {
 
-        const {navs} = this.props;
-
         return (
             <NavHelper>
                 <nav className='top-nav top-nav-light cf' role='navigation'>
@@ -19,9 +16,9 @@ export default React.createClass({
                     <label htmlFor='menu-toggle'>Menu</label>
                     <ul className='list-unstyled list-inline breadcrumbs'>
                         <li><a className='piq-link' href='/'></a></li>
-                        {navs.map((nav) => {
-                            return <Nav key={nav.title} nav={nav}/>
-                        })}
+                        <li className='button-group'>
+                          <a href='/' className='current-item'>Transportation Study Zones</a>
+                        </li>
                     </ul>
                 </nav>
                 <div className='body'>

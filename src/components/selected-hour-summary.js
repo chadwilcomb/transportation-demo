@@ -12,6 +12,7 @@ export default React.createClass({
           formatted = this.formatHour(mapState.hour)
           content = (
             <div className='hour-info'>
+              <div className='zone-header'>SELECTED HOUR</div>
               <nav role='navigation'>
                 <ul className='noselect list-unstyled list-inline pagination'>
                   <li><a onClick={this.backHour}><strong>-</strong></a></li>
@@ -41,12 +42,12 @@ export default React.createClass({
 
     formatHour (hour) {
       if (hour === 0) {
-        return '12am'
+        return '12:00 am'
       } else if (hour < 12) {
-        return hour + 'am'
+        return hour + ':00 am'
       } else if (hour < 24) {
-        return (hour === 12 ? hour : hour - 12) + 'pm'
+        return (hour === 12 ? hour : hour - 12) + ':00 pm'
       }
-      return hour + 'am'
+      return hour + ':00 am'
     }
 })

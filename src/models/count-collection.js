@@ -26,20 +26,20 @@ export default Collection.extend({
     cartoDbProps () {
       return {
         account: 'chadwilcomb',
-        tableName: 'zone_pair_hourly_counts',
+        tableName: 'nymtc_trip_table',
         format: '',
         apiKey: '',
-        sql: 'SELECT origin,destination,hour,count FROM',
+        sql: 'SELECT origin,destination,hour,count,percentage FROM',
         sql2: 'WHERE destination = ' + app.mapState.zone_id + ' AND hour = ' + app.mapState.hour,
       }
     },
 
     populate () {
-      if (app.selectedLayer === 'counts') {
+      // if (app.selectedLayer === 'counts') {
         this.fetch({
           parse: true
         })
-      }
+      // }
     },
 
     getInternalOrigins (zoneId) {

@@ -1,5 +1,5 @@
 import Model from 'ampersand-model';
-// import numeral from 'numeral';
+import numeral from 'numeral';
 
 export default Model.extend({
 
@@ -7,17 +7,18 @@ export default Model.extend({
         origin: 'number',
         destination: 'number',
         count: 'number',
+        percentage: 'number',
         hour: 'number',
     },
 
-    
-    // derived: {
-    //     index: {
-    //         deps: ['value'],
-    //         fn () {
-    //             return numeral(this.value).format('0%');
-    //         }
-    //     },
-    // }
+
+    derived: {
+      pct: {
+        deps: ['percentage'],
+        fn () {
+          return numeral(this.percentage).format('0.00%');
+        }
+      },
+    }
 
 });

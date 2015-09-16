@@ -29,8 +29,17 @@ html, body, .nav-helper, .body, .demo-container, .map
 
 .body
     height: calc(100% - 62px)
+
 h1, h2, h3, h4, h5, h6, strong
     color: body-black
+
+.pull-left
+  float:left
+  display:block
+
+.pull-right
+  float:right
+  display:block
 
 .top-nav
     margin-bottom: 0
@@ -77,60 +86,7 @@ h1, h2, h3, h4, h5, h6, strong
     width: 70%
     height: 100%
     overflow: hidden
-.sidebar
-    float: left
-    padding: 0 8px 8px 8px
-    width: 30%
-    height: 100%
-    overflow-x:hidden
-    overflow-y: auto
-    strong
-        font-weight: 700
-        color: piq-purple
-    .tabs
-        margin-bottom: 5px
 
-    .airport-switch
-        width: 100%
-        margin-top: 5px
-    .airport-name
-        width: 100%
-        font-weight: bold
-        font-size: 1.1em
-        margin-top: 10px
-        margin-bottom: 10px
-    .airport-info
-        width: 100%
-    .airport-info p
-        margin-bottom: 2px
-
-    li.airport-tab
-        width: 33%
-        text-align: center
-    li.airport-tab a
-        font-size: 1.5em
-        padding: 10px 10px
-        color: body-black
-    li.airport-tab a.current-item, li.airport-tab a:hover
-        color: piq-purple
-    .audience-profile-container
-        overflow-y: auto
-    .audience-profile-heading
-        font-weight: bold
-        margin-bottom: 0
-    .audience-profile-table
-        font-size: 0.85em
-    .clickable
-        cursor: pointer
-    .audience-profile-table td
-        padding: 3px
-    .audience-profile-table td:first-child
-        width: 80%
-    .sel-cat, .sel-cat-name *, .clickable:hover
-        color: piq-purple
-        background-color: piq-purple-light
-    .sel-cat:hover, .sel-cat-name:hover
-        color: piq-purple-dark
 
 header
   padding-top: 50px

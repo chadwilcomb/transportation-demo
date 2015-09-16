@@ -22,9 +22,9 @@ export default Router.extend({
     },
 
     routes: {
-        '': 'public',
-        'zones': 'zones',
-        'counts': 'counts',
+        '': 'zones',
+        // 'zones': 'zones',
+        // 'counts': 'counts',
     },
 
     public () {
