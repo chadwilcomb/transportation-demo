@@ -12,7 +12,7 @@ export default Router.extend({
     renderPage(page, opts = {layout: true}) {
         if(opts.layout) {
             page = (
-                <Layout navs={app.navs}>
+                <Layout>
                     {page}
                 </Layout>
             );
@@ -42,7 +42,6 @@ export default Router.extend({
       if (!app.isRendered) {
         this.demoHome();
       }
-      app.navs.get('zones').active = true
       app.trigger('page', 'zones')
       app.selectedLayer = 'zones'
     },
@@ -53,7 +52,6 @@ export default Router.extend({
       }
       app.trigger('page', 'counts')
       app.selectedLayer = 'counts'
-      app.navs.get('counts').active = true;
     },
 
     fourOhFour () {

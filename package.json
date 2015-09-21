@@ -4,13 +4,17 @@
   "description": "PlaceIQ Transportation Demo",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server",
+    "start": "NODE_ENV=development webpack-dev-server",
     "prebuild": "rm -rf public && mkdir public",
     "build": "NODE_ENV=production webpack",
     "deploy": "surge -p public -d placeiq-transportation.surge.sh",
     "yolo": "npm run build && npm run deploy"
   },
-  "author": "Chad Wilcomb",
+  "author": "Chad Wilcomb <chad@placeiq.com>",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:chadwilcomb/transportation-demo.git"
+  },
   "license": "MIT",
   "dependencies": {
     "ampersand-app": "^1.0.4",
